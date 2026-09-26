@@ -1,0 +1,451 @@
+/**
+ * @name midnight-glassy-bluer
+ * @description a dark, glassy discord theme with translucent panels and blue borders.
+ * @author Nihil
+ * @version 1.0.0
+ * @website https://github.com/Nihil-6/midnight-glassy-bluer
+ * @source https://github.com/Nihil-6/midnight-glassy-bluer/blob/main/midnight-glassy-bluer.theme.css
+ * @authorLink https://github.com/Nihil-6
+*/
+
+/* import theme modules */
+@import url('https://refact0r.github.io/midnight-discord/build/midnight.css');
+
+body {
+    /* font options */
+    --font: 'figtree'; /* change to '' for default discord font */
+    --code-font: ''; /* change to '' for default discord font */
+    font-weight: 400; /* normal text font weight. DOES NOT AFFECT BOLD TEXT */
+
+    /* sizes */
+    --gap: 12px; /* spacing between panels */
+    --divider-thickness: 4px; /* thickness of unread messages divider and highlighted message borders */
+    --border-thickness: 2px; /* THICKER BORDERS (midnight default is 1px). The border rules at the end
+                                of the file use this same variable, so they change with it. Try 3px for even thicker. */
+
+    /* animation/transition options */
+    --animations: on; /* off: disable animations/transitions, on: enable animations/transitions */
+    --list-item-transition: 0.2s ease; /* transition for list items */
+    --dms-icon-svg-transition: 0.4s ease; /* transition for the dms icon */
+    --border-hover-transition: 0.2s ease; /* transition for borders when hovered */
+
+    /* top bar options */
+    --top-bar-height: var(--gap); /* height of the top bar (discord default is 36px, old discord style is 24px, var(--gap) recommended if button position is set to titlebar) */
+    --top-bar-button-position: titlebar; /* off: default position, hide: hide buttons completely, serverlist: move inbox button to server list, titlebar: move inbox button to channel titlebar (will hide title) */
+    --top-bar-title-position: off; /* off: default centered position, hide: hide title completely, left: left align title (like old discord) */
+    --subtle-top-bar-title: off; /* off: default, on: hide the icon and use subtle text color (like old discord) */
+
+    /* window controls */
+    --custom-window-controls: on; /* off: default window controls, on: custom window controls */
+    --window-control-size: 14px; /* size of custom window controls */
+
+    /* dms button options */
+    --custom-dms-icon: custom; /* off: use default discord icon, hide: remove icon entirely, custom: use custom icon */
+    --dms-icon-svg-url: url('https://refact0r.github.io/midnight-discord/assets/Font_Awesome_5_solid_moon.svg'); /* icon svg url. MUST BE A SVG. */
+    --dms-icon-svg-size: 90%; /* size of the svg (css mask-size property) */
+    --dms-icon-color-before: var(--icon-subtle); /* normal icon color */
+    --dms-icon-color-after: var(--white); /* icon color when button is hovered/selected */
+    --custom-dms-background: off; /* off to disable, image to use a background image (must set url variable below), color to use a custom color/gradient */
+    --dms-background-image-url: url(''); /* url of the background image */
+    --dms-background-image-size: cover; /* size of the background image (css background-size property) */
+    --dms-background-color: linear-gradient(70deg, var(--blue-2), var(--purple-2), var(--red-2)); /* fixed color/gradient (css background property) */
+
+    /* background image options */
+    --background-image: off; /* off: no background image, on: enable background image (must set url variable below) */
+    --background-image-url: url(''); /* url of the background image */
+
+    /* transparency/blur options */
+    /* NOTE: TO USE TRANSPARENCY/BLUR, YOU MUST HAVE TRANSPARENT BG COLORS. FOR EXAMPLE: --bg-4: hsla(220, 15%, 10%, 0.7); */
+    --transparency-tweaks: on; /* removes opaque elements that get in the way of transparency */
+    --remove-bg-layer: on; /* ESSENTIAL: removes the base layer .bg__960e4. When it is kept (off),
+                              it sits behind everything, fully opaque, so making the panels
+                              transparent changes nothing on screen. */
+    --panel-blur: off; /* OFF FOR PERFORMANCE: applies backdrop-filter to ~15 panels at once,
+                          which is expensive on the GPU. It is also redundant when a compositor
+                          blur (e.g. Better Blur on KWin) already blurs the whole window
+                          background. Turn it on only if you have no compositor blur. */
+    --blur-amount: 16px;
+    --bg-floating: var(--bg-3); /* menus/modals/popups: opaque on purpose, otherwise they become unreadable */
+
+    /* chatbar options */
+    --custom-chatbar: off; /* off: default chatbar, separated: chatbar separated from chat */
+    --chatbar-height: 47px; /* height of the chatbar (56px by default, 47px to align with user panel, 56px recommended for separated) */
+
+    /* other options */
+    --small-user-panel: on; /* off: default user panel, on: smaller user panel like in old discord */
+}
+
+/* color options */
+:root {
+    --colors: on; /* off: discord default colors, on: midnight custom colors */
+
+    /* ORIGINAL MIDNIGHT PALETTE, UNTOUCHED.
+       No color value was changed: transparency is handled in the block at the
+       end of the file, deriving alpha from these same colors via color-mix. */
+
+    /* text colors -- WHITER.
+       Lightness was raised and saturation lowered at each level, keeping the
+       theme's hierarchy (1 lightest ... 5 most muted). The original midnight
+       values are in the comments, for easy reverting. */
+    --text-0: var(--bg-4); /* text on colored elements -- dark on purpose: contrasts with the accent buttons */
+    --text-1: hsl(220, 30%, 99%); /* other normally white text (midnight: 220, 45%, 95%) */
+    --text-2: hsl(220, 20%, 92%); /* headings and important text (midnight: 220, 25%, 70%) */
+    --text-3: hsl(220, 16%, 86%); /* normal text -- the message body (midnight: 220, 20%, 60%) */
+    --text-4: hsl(220, 12%, 70%); /* icon buttons and channels (midnight: 220, 15%, 40%) */
+    --text-5: hsl(220, 10%, 52%); /* muted channels/chats and timestamps (midnight: 220, 15%, 25%) */
+
+    /* background and dark colors */
+    --bg-1: hsla(220, 15%, 20%, 1); /* dark buttons when clicked */
+    --bg-2: hsla(220, 15%, 16%, 1); /* dark buttons */
+    --bg-3: hsla(220, 15%, 13%, 1); /* spacing, secondary elements */
+    --bg-4: hsla(220, 15%, 10%, 1); /* main background color */
+    --hover: hsla(221, 19%, 40%, 0.1); /* channels and buttons when hovered */
+    --active: hsla(220, 19%, 40%, 0.2); /* channels and buttons when clicked or selected */
+    --active-2: hsla(220, 19%, 40%, 0.3); /* extra state for transparent buttons */
+    --message-hover: hsla(220, 0%, 0%, 0.1); /* messages when hovered */
+
+    /* accent colors */
+    --accent-1: var(--blue-1); /* links and other accent text */
+    --accent-2: var(--blue-2); /* small accent elements */
+    --accent-3: var(--blue-3); /* accent buttons */
+    --accent-4: var(--blue-4); /* accent buttons when hovered */
+    --accent-5: var(--blue-5); /* accent buttons when clicked */
+    --accent-new: var(--accent-2); /* stuff that's normally red like mute/deafen buttons */
+    --mention: linear-gradient(to right, color-mix(in hsl, var(--accent-2), transparent 90%) 40%, transparent); /* background of messages that mention you */
+    --mention-hover: linear-gradient(to right, color-mix(in hsl, var(--accent-2), transparent 95%) 40%, transparent); /* background of messages that mention you when hovered */
+    --reply: linear-gradient(to right, color-mix(in hsl, var(--text-3), transparent 90%) 40%, transparent); /* background of messages that reply to you */
+    --reply-hover: linear-gradient(to right, color-mix(in hsl, var(--text-3), transparent 95%) 40%, transparent); /* background of messages that reply to you when hovered */
+
+    /* status indicator colors */
+    --online: var(--green-2); /* change to #40a258 for default */
+    --dnd: var(--red-2); /* change to #d83a41 for default */
+    --idle: var(--yellow-2); /* change to #cc954c for default */
+    --streaming: var(--purple-2); /* change to ##9147ff for default */
+    --offline: var(--text-4); /* change to #82838b for default offline color */
+
+    /* border colors -- LIGHT BLUE.
+       Midnight maps --border-subtle/normal/strong to var(--border), and
+       --border-subtle is what it uses for panel borders. So changing --border
+       here already paints every inner area border blue.
+
+       --border-blue is the SINGLE SOURCE of the shade. Same hue 215 as the
+       theme's blue family, just lighter: 82% lightness vs 70% for blue-2.
+       Raise the lightness to go lighter (88%), lower it to go darker (75%). */
+    --border-blue: oklch(82% 0.11 215); /* <<< BLUE SHADE */
+
+    --border-light: color-mix(in srgb, var(--border-blue) 35%, transparent); /* general light border color */
+    --border: color-mix(in srgb, var(--border-blue) 60%, transparent); /* general normal border color */
+    --border-hover: color-mix(in srgb, var(--border-blue) 90%, transparent); /* border color of panels when hovered */
+    --button-border: hsl(220, 0%, 100%, 0.1); /* neutral border color of buttons */
+
+    /* base colors */
+    --red-1: oklch(75% 0.12 0);
+    --red-2: oklch(70% 0.12 0);
+    --red-3: oklch(65% 0.12 0);
+    --red-4: oklch(60% 0.12 0);
+    --red-5: oklch(55% 0.12 0);
+
+    --green-1: oklch(75% 0.11 170);
+    --green-2: oklch(70% 0.11 170);
+    --green-3: oklch(65% 0.11 170);
+    --green-4: oklch(60% 0.11 170);
+    --green-5: oklch(55% 0.11 160);
+
+    --blue-1: oklch(75% 0.1 215);
+    --blue-2: oklch(70% 0.1 215);
+    --blue-3: oklch(65% 0.1 215);
+    --blue-4: oklch(60% 0.1 215);
+    --blue-5: oklch(55% 0.1 215);
+
+    --yellow-1: oklch(80% 0.11 90);
+    --yellow-2: oklch(75% 0.11 90);
+    --yellow-3: oklch(70% 0.11 90);
+    --yellow-4: oklch(65% 0.11 90);
+    --yellow-5: oklch(60% 0.11 90);
+
+    --purple-1: oklch(75% 0.11 310);
+    --purple-2: oklch(70% 0.11 310);
+    --purple-3: oklch(65% 0.11 310);
+    --purple-4: oklch(60% 0.11 310);
+    --purple-5: oklch(55% 0.11 310);
+}
+
+
+/* ==========================================================================
+   INNER AREA TRANSPARENCY  --  2-LAYER ARCHITECTURE
+
+   The problem: giving each panel an alpha is not enough, because Discord
+   stacks several opaque WRAPPER LAYERS behind them
+   (.app_, .layers_, .layer_, .base_, .content_, .page_, .bg__960e4 ...).
+   With those layers painted, a transparent panel only reveals the layer
+   below it -- which has almost the same color. That is why the server list,
+   the chat area and the member list kept looking solid.
+
+   The solution:
+
+   LAYER 1 -- THE VEIL (--glass-veil).
+     Sits on `body`, behind absolutely everything, and is what shows in the
+     GAPS between panels. It makes the interface read as DARK instead of
+     washed out by the wallpaper, and keeps any area from being 100%
+     transparent. It does not depend on any class hash.
+
+   LAYER 2 -- THE PANELS (--glass-panel).
+     Wrappers get no background (they were the ones left opaque), and the
+     inner panels get their own tint on top of the veil. The alphas add up,
+     so a panel's actual opacity is higher than either of the two.
+     Inner children of the panels are cleared, so they are not counted twice.
+
+   The theme's base color is UNTOUCHED: both layers derive from var(--bg-4),
+   midnight's original background color, with alpha only. No new colors.
+   ========================================================================== */
+:root {
+    /* THE VEIL: sits on the body, behind everything, and is what shows in the
+       GAPS between panels. Lowering it (e.g. to 30%) makes the whole
+       interface noticeably lighter. */
+    --glass-veil: color-mix(in srgb, var(--bg-4) 55%, transparent);
+
+    /* BACKGROUND COLOR OF THE INNER AREAS, added on top of the veil.
+       55% veil + 30% here = ~69% panel opacity: darker than the veil alone,
+       with its own tint, standing out from the gaps.
+       40% = very closed | 30% = default | 18% = more wallpaper. */
+    --glass-panel: color-mix(in srgb, var(--bg-4) 30%, transparent); /* <<< ADJUST HERE */
+}
+
+/* ---- LAYER 1: the veil ---- */
+body {
+    background: var(--glass-veil) !important;
+}
+
+/* ---- LAYER 2a: Discord wrappers ----
+   These are the layers that stayed opaque behind the panels. */
+[class*='appMount'],
+[class*='app_'],
+[class*='appDevToolsWrapper'],
+[class*='bg_'],
+[class*='layers_'],
+[class*='layer_'],
+[class*='baseLayer_'],
+[class*='base_'],
+[class*='content_'],
+[class*='page_'],
+[class*='appAsidePanelWrapper'],
+[class*='notAppAsidePanel_'],
+[class*='sidebar_'],
+[class*='chat_'],
+[class*='container__01ae2'],
+[class*='channelChatWrapper'] {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* ---- LAYER 2b: inner panels ----
+   Exact list of midnight's panels (Discord hashes). If one of them turns
+   solid again, the hash changed: get the new one from
+   https://refact0r.github.io/midnight-discord/build/midnight.css */
+.container__89463 > .toolbar__89463,
+.container__89463 > .contentContainer__89463,
+.guilds__5e434,
+.sidebarList__5e434,
+.panels__5e434,
+.chat_f75fb0 > .subtitleContainer_f75fb0,
+.chatContent_f75fb0,
+.container_c8ffbb,
+.content_f75fb0 > .membersWrap_c8ffbb,
+.container__133bf > .container__9293f,
+.container_f391e3 > .container__9293f,
+.homeWrapper__0920e > .container__9293f,
+.container__01ae2 > .container__9293f,
+.container_fb64c9 > .container__9293f,
+.peopleColumn__133bf,
+.nowPlayingColumn__133bf,
+.mainPageScroller__80907,
+.headerBar__1a9ce,
+.scroller__23746,
+.container_f391e3 > .content_f75fb0,
+.shop__6db1d,
+.content_f75fb0 > aside > .outer_c0bea0,
+.searchResultsWrap_a98f3b,
+.container_f369db,
+.chat_fb64c9,
+.container_a592e1,
+.callContainer_cb9592,
+.callContainer__722ff,
+.chat_f75fb0 > .header_c791b2,
+.chat_f75fb0 > .scrollerBase_d125d2,
+.chat_f75fb0 > .header__0b563,
+.chat_f75fb0 > .container__0b563 {
+    background: var(--glass-panel) !important;
+}
+
+/* ---- LAYER 2c: the same panels, via [class*=] ----
+   Fallback for when Discord changes a hash from the list above.
+
+   PERF: no `div:has(> [data-list-id=...])` here on purpose. An unanchored
+   `:has()` forces the engine to test EVERY div on the page on each style
+   recalculation -- and Discord recalculates a lot. It would also be
+   redundant: those panels are already covered by .container_c8ffbb and the
+   [class*=] selectors below. */
+.container_c8ffbb,
+[class*='guilds_'],
+[class*='sidebarList_'],
+[class*='panels_'],
+[class*='chatContent_'],
+[class*='membersWrap_'],
+[class*='searchResultsWrap_'] {
+    background: var(--glass-panel) !important;
+}
+
+/* ---- LAYER 2d: INNER children of the panels: always transparent ----
+   These sit INSIDE the panels above. If they also got --glass-panel, the
+   two alphas would add up and the inner area would end up more opaque than
+   the panel itself. So the tint stays on the panel and these are cleared.
+   The data-list-ids are scrollers, not panels -- that is why they are here. */
+[data-list-id='guildsnav'],
+[data-list-id='chat-messages'],
+[data-list-id^='members'],
+[class*='messagesWrapper_'],
+[class*='scrollerInner_'],
+[class*='privateChannels_'] {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* ---- LAYER 2e: surface variables ----
+   Any panel not listed above gets the tint from here, instead of ending up
+   with no color at all. The LAYER 2a wrappers are not affected: they have
+   `background: transparent !important`, which wins over the variable color.
+
+   Discord defines --background-base-* on ancestors CLOSE to the panel, and
+   with variable inheritance the nearest ancestor wins (regardless of
+   specificity) -- that is why defining them on :root is not enough.
+
+   PERF: no `*, *::before, *::after` here on purpose. Three custom properties
+   on EVERY element (plus two pseudo-elements per element) forces Chromium
+   to recalculate inheritance across the whole tree -- and Discord's tree
+   has tens of thousands of nodes. That caused heavy lag.
+
+   Since custom properties are INHERITED, the universal selector is not
+   needed: declaring them on the ANCESTORS is enough. The chain below covers
+   the same descendants with ~15 selectors instead of one per element. */
+#app-mount,
+[class*='app_'],
+[class*='layers_'],
+[class*='layer_'],
+[class*='base_'],
+[class*='content_'],
+[class*='page_'],
+[class*='sidebar_'],
+[class*='chat_'],
+[class*='guilds_'],
+[class*='sidebarList_'],
+[class*='chatContent_'],
+.container_c8ffbb,
+[class*='membersWrap_'],
+[class*='searchResultsWrap_'] {
+    --background-base-low: var(--glass-panel);
+    --background-base-lower: var(--glass-panel);
+    --background-base-lowest: var(--glass-panel);
+}
+
+/* ==========================================================================
+   EXCEPTIONS: FLOATING surfaces stay solid.
+   Context menus, modals, profile popups, autocomplete, tooltips and the
+   inbox float over the content; transparent, they become unreadable.
+   They use --bg-floating (= var(--bg-3), opaque), defined at the top of the file.
+   This just restores the surface variables that the rule above overrode.
+   ========================================================================== */
+[role='dialog'],
+[role='menu'],
+[role='tooltip'],
+[class*='menu_'],
+[class*='modal_'],
+[class*='popout'],
+[class*='autocomplete'],
+[class*='layerContainer'] [class*='focusLock'],
+[class*='messagesPopoutWrap'],
+[class*='container__8a031'],
+[class*='container__55c99'],
+[class*='contentWrapper'] {
+    --background-base-low: var(--bg-4);
+    --background-base-lower: var(--bg-4);
+    --background-base-lowest: var(--bg-4);
+}
+
+/* ==========================================================================
+   BLUE BORDER ON INNER AREAS
+
+   Changing --border in the colors block already paints the borders midnight
+   draws blue. This rule is the safeguard: it reasserts the border on the
+   main panels in case --transparency-tweaks or a new Discord hash removes one.
+
+   Deliberately NARROW list: only the outer panels. It does not include the
+   wrappers or the inner children (scrollers, messagesWrapper...), otherwise
+   you would get double borders or a border around every inner block.
+
+   To change the blue shade, edit --border / --border-hover in the colors
+   block -- not here. They are the single source.
+   ========================================================================== */
+.guilds__5e434,
+.sidebarList__5e434,
+.panels__5e434,
+.chatContent_f75fb0,
+.chat_f75fb0 > .subtitleContainer_f75fb0,
+.container_c8ffbb,
+.content_f75fb0 > .membersWrap_c8ffbb,
+.searchResultsWrap_a98f3b,
+[class*='guilds_'],
+[class*='sidebarList_'],
+[class*='panels_'],
+[class*='chatContent_'],
+[class*='membersWrap_'],
+[class*='searchResultsWrap_'] {
+    border: var(--border-thickness) solid var(--border) !important;
+    border-radius: var(--radius-lg);
+}
+
+.guilds__5e434:hover,
+.sidebarList__5e434:hover,
+.panels__5e434:hover,
+.chatContent_f75fb0:hover,
+.container_c8ffbb:hover,
+.searchResultsWrap_a98f3b:hover,
+[class*='guilds_']:hover,
+[class*='sidebarList_']:hover,
+[class*='panels_']:hover,
+[class*='chatContent_']:hover,
+[class*='membersWrap_']:hover,
+[class*='searchResultsWrap_']:hover {
+    border-color: var(--border-hover) !important;
+}
+
+/* ==========================================================================
+   BLUE BORDER ON HOVER: channels, DMs and titlebar icons
+
+   Uses an INSET box-shadow instead of a real border, on purpose: a new
+   border on hover would push the content 2px and make the item "jump" --
+   and midnight also animates margin-left on these items, which would make
+   the jolt worse. The inset draws on the inside, takes no layout space,
+   and follows the element's border-radius.
+
+   Same thickness (--border-thickness) and same blue (--border-hover) as the
+   panel borders, so it changes along with --border-blue.
+   ========================================================================== */
+/* channels in the channel list */
+.wrapper__2ea32:hover .link__2ea32,
+[class*='sidebarList_'] [class*='wrapper_']:hover > [class*='link_'],
+/* conversations in the DM list */
+.channel__972a0:hover,
+[class*='privateChannels_'] [class*='channel_']:hover,
+/* titlebar icons: voice call, video, search, pins, members... */
+.clickable__9293f:hover,
+[class*='toolbar_'] [class*='clickable_']:hover {
+    box-shadow: inset 0 0 0 var(--border-thickness) var(--border-hover);
+    border-radius: var(--radius-md);
+}
+
+/* the search bar is wider than the icons: a larger radius looks better on it */
+[class*='searchBar']:hover,
+[class*='search_'] [class*='input_']:hover {
+    box-shadow: inset 0 0 0 var(--border-thickness) var(--border-hover);
+    border-radius: var(--radius-lg);
+}
